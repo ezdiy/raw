@@ -31,7 +31,7 @@ func NewConn(isl2 bool) (*Conn, error) {
 		l2 = "l3"
 		typ = unix.SOCK_DGRAM
 	}
-	sk, err := unix.Socket(unix.AF_PACKET, typ, 0)
+	sk, err := unix.Socket(unix.AF_PACKET, typ, int(htons(unix.ETH_P_ALL)))
 	if err != nil {
 		return nil, err
 	}
@@ -106,3 +106,6 @@ func (s *Conn) Bind(addr net.Addr) (err error) {
 	return err2
 }
 
+func htons(i uint16) uint16 {
+	return (i&0xff)<<8 | i>>8
+}
